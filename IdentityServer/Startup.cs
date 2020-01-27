@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using IdentityServer.Interface;
+using IdentityServer.RInterface;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -16,6 +18,8 @@ namespace IdentityServer
 
         public void ConfigureServices(IServiceCollection services)
         {
+         //   IUsers users = new RUsers();
+
             // uncomment, if you want to add an MVC-based UI
             //services.AddControllersWithViews();
 
@@ -23,15 +27,22 @@ namespace IdentityServer
             //AddIdentityServer 会将 IdentityServer 注册到 DI
             //。他还会注册一个基于内存存储的运行时状态，
             //这对于开发场景来说是很有用的。对于生产环境你就需要像数据库或缓存这些持久化或共享存储部件。
-            services.AddIdentityServer().AddDeveloperSigningCredential()
-               
+            services.AddIdentityServer()
                 
+                .AddDeveloperSigningCredential()
+
                 ///////F4  注入APi和Client
                 //注入ApiResources   根据我们的config类进行创建APi资源
                 .AddInMemoryApiResources(Config.GetApiResources)
                 //注入客户端    根据config类配置的信息进行创建客户端   使用时请求需要指定客户端进行对应的授权   不同的客户端可以配置不同的权限
-                .AddInMemoryClients(Config.GetClient());
-       
+ 
+                .AddInMemoryClients(Config.GetClient())
+                .AddTestUsers(Config.GetUsers());//注册测试用户
+
+
+           
+
+
         }
 
         public void Configure(IApplicationBuilder app)
@@ -41,13 +52,13 @@ namespace IdentityServer
                 app.UseDeveloperExceptionPage();
             }
 
-       //F2 插入中间件
+            //F2 插入中间件
             app.UseIdentityServer();
 
-            
 
 
-             
+
+
         }
     }
 }
