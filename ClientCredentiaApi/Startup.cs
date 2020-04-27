@@ -32,7 +32,7 @@ namespace ClientCredentiaApi
                 options.Authority = "http://localhost:5000"; //授权地址
                 options.RequireHttpsMetadata = false;//非HTTPS
                 //options.ApiName = "api1"; //API 名称
-
+               
             });
         }
 
